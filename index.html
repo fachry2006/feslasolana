@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Januari 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage-green: #5d6d5a;
+            --deep-charcoal: #1a1c1d;
+            --gold-accent: #b08d49;
+            --bg-off-white: #efebe3;
+            --paper-texture: url("https://www.transparenttextures.com/patterns/handmade-paper.png");
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-off-white);
+            color: var(--deep-charcoal);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        .serif { font-family: 'Lora', serif; }
+        .heading { font-family: 'Playfair Display', serif; }
+
+        .fade-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 40;
+        }
+        .fade-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .calendar-frame {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 380px;
+            width: 100%;
+            transition: all 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .special-day {
+            color: var(--deep-charcoal) !important;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .special-day::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--gold-accent);
+            border-radius: 50%;
+            background: rgba(176, 141, 73, 0.1);
+        }
+
+        .note-card {
+            background-color: #fffef0;
+            background-image: var(--paper-texture);
+            padding: 2.5rem 2rem;
+            width: 85%;
+            max-width: 320px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -45%) scale(0.9) rotate(2deg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 55;
+            box-shadow: 
+                2px 2px 0 #e6e4d5,
+                4px 4px 0 #dad8c7,
+                15px 15px 40px rgba(0,0,0,0.2);
+            border-radius: 2px;
+        }
+
+        .note-card.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1) rotate(-1deg);
+        }
+
+        .note-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 10px;
+            background: linear-gradient(135deg, transparent 5px, #fffef0 0) 0 5px,
+                        linear-gradient(-135deg, transparent 5px, #fffef0 0) 0 5px;
+            background-size: 10px 10px;
+            transform: translateY(100%);
+        }
+
+        #full-message {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .letter-wrap {
+            background-color: #ffffff;
+            background-image: var(--paper-texture);
+            width: 100%;
+            max-width: 450px;
+            max-height: 95vh;
+            padding: 3rem 2rem;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.4);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.7s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 2px;
+            overflow: hidden; 
+        }
+
+        #full-message.active .letter-wrap {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .btn-black {
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--deep-charcoal);
+            color: #fff;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        @media (max-width: 400px) {
+            .letter-wrap { padding: 2.5rem 1.5rem; }
+            .heading { font-size: 1.8rem; }
+            .serif { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" class="fade-overlay" onclick="closeEverything()"></div>
+
+    <header class="text-center mb-6 relative z-10">
+        <span class="text-[8px] tracking-[0.8em] text-gray-500 uppercase block mb-1 font-bold">Januari 2026</span>
+        <h1 class="heading italic font-bold text-gray-800 text-3xl">Momen Spesial</h1>
+    </header>
+
+    <div class="calendar-frame" id="calendar-wrapper">
+        <div class="grid grid-cols-7 gap-1 mb-4 text-center">
+            <div class="text-[9px] font-bold text-gray-300">S</div>
+            <div class="text-[9px] font-bold text-gray-300">M</div>
+            <div class="text-[9px] font-bold text-gray-300">T</div>
+            <div class="text-[9px] font-bold text-gray-300">W</div>
+            <div class="text-[9px] font-bold text-gray-300">T</div>
+            <div class="text-[9px] font-bold text-gray-300">F</div>
+            <div class="text-[9px] font-bold text-gray-300">S</div>
+        </div>
+        <div id="calendar-days" class="grid grid-cols-7 gap-1"></div>
+    </div>
+
+    <div id="sticky-note" class="note-card">
+        <h3 class="serif italic text-2xl mb-3 text-gray-800">Catatan Kecil</h3>
+        <p class="text-[11px] text-gray-500 font-medium leading-relaxed tracking-wide">
+            Untuk zaki, ada satu hal yang ingin kusampaikan hari ini.
+        </p>
+        <button onclick="showFullMessage()" class="btn-black mt-6">Baca Surat</button>
+    </div>
+
+    <div id="full-message">
+        <div class="letter-wrap">
+            <div class="close-btn" onclick="hideFullMessage()">✕</div>
+            
+            <header class="mb-5">
+                <p class="text-[9px] tracking-[0.5em] text-gray-400 uppercase font-bold mb-2">Teruntuk zaki</p>
+                <h2 class="heading text-3xl text-gray-900 italic">Happy Birthday</h2>
+            </header>
+            
+            <div class="serif text-gray-700 leading-relaxed text-[13px] md:text-[15px]">
+                <p class="mb-4">zaki, selamat ulang tahun ya!</p>
+                
+                <p class="mb-4 italic">"May this year bring you closer to your dreams, surround you with people who truly care, and fill your days with laughter and unforgettable moments."</p>
+          <p class="mb-4">On your birthday, I just want you to be happy. Truly happy. You deserve it and more.</p>
+                
+                <p class="mb-4">Sekali lagi, happy birthday ya!</p>
+                
+                <div class="mt-6 pt-5 border-t border-gray-100">
+                    <p class="text-[10px] italic text-gray-400 mb-1">Penuh doa,</p>
+                    <p class="text-lg font-bold text-gray-800 tracking-tight">fina</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const daysContainer = document.getElementById('calendar-days');
+        const stickyNote = document.getElementById('sticky-note');
+        const overlay = document.getElementById('overlay');
+        const wrapper = document.getElementById('calendar-wrapper');
+        const modal = document.getElementById('full-message');
+
+        function init() {
+            for (let i = 0; i < 4; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'day';
+                daysContainer.appendChild(empty);
+            }
+
+            for (let d = 1; d <= 31; d++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day font-medium';
+                dayEl.textContent = d;
+
+                if (d === 19) {
+                    dayEl.classList.add('special-day');
+                    dayEl.onclick = (e) => {
+                        e.stopPropagation();
+                        openNote();
+                    };
+                }
+                daysContainer.appendChild(dayEl);
+            }
+        }
+
+        function openNote() {
+            stickyNote.classList.add('active');
+            overlay.classList.add('active');
+            wrapper.style.transform = 'scale(0.9) blur(4px)';
+            wrapper.style.filter = 'grayscale(0.8)';
+        }
+
+        function showFullMessage() {
+            stickyNote.classList.remove('active');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 50);
+        }
+
+        function hideFullMessage() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                closeEverything();
+            }, 600);
+        }
+
+        function closeEverything() {
+            stickyNote.classList.remove('active');
+            overlay.classList.remove('active');
+            wrapper.style.transform = 'scale(1) blur(0)';
+            wrapper.style.filter = 'none';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
