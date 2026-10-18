@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fesla Motors | $FESLA on Solana</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="HEROtwo.jpg">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -110,7 +113,7 @@
 
         const CONTRACT_ADDRESS = "FeslaSolanaMemeCoin69420PumpDotFunContract420";
 
-        // Daftar Gambar Hero Slide (Hanya heroslide1, heroslide2, herofirst)
+        // Hero slides (tanpa HEROtwo.jpg)
         const HERO_SLIDES = [
             "heroslide1",
             "heroslide2",
@@ -194,9 +197,8 @@
                 <div class="min-h-screen flex flex-col justify-between relative overflow-x-hidden">
                     
                     {/* NAVIGATION BAR */}
-                    {}
                     <header class="fixed top-0 left-0 right-0 z-50 bg-feslaDark/90 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between">
-                        {/* Logo */}
+                        {/* Logo Fesla */}
                         <a href="#hero" class="flex items-center space-x-2">
                             <img src="logofesla.png" alt="Fesla Logo" class="h-8 w-auto object-contain" onError={(e) => { e.target.style.display='none'; if(e.target.nextElementSibling) e.target.nextElementSibling.style.display='flex'; }} />
                             <div class="hidden flex-col leading-none">
@@ -274,11 +276,10 @@
                         </div>
                     )}
 
-                    {/* HERO SECTION WITH SMOOTH SLIDE BACKGROUND */}
-                    {}
+                    {/* HERO SECTION */}
                     <section id="hero" class="relative min-h-screen flex flex-col justify-center items-end pt-28 pb-12 px-6 md:px-16 overflow-hidden">
                         
-                        {/* Background Smooth Slider */}
+                        {/* Background Smooth Slider (heroslide1, heroslide2, herofirst) */}
                         <div class="absolute inset-0 z-0">
                             {HERO_SLIDES.map((slide, index) => (
                                 <div 
@@ -292,24 +293,8 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-feslaDark via-transparent to-feslaDark/50"></div>
                         </div>
 
-                        {/* ELEMEN COIN 3D MELAYANG */}
-                        <div class="hidden md:flex absolute left-12 top-1/3 z-20 items-center justify-center pointer-events-none coin-3d-wrapper">
-                            <div class="relative animate-float">
-                                <img 
-                                    src="coin3d" 
-                                    alt="3D Fesla Coin" 
-                                    class="w-48 h-48 lg:w-64 lg:h-64 rounded-full coin-3d-element animate-spin3d animate-pulseGlow border-2 border-feslaRed/40 p-1 bg-black/30 backdrop-blur-sm"
-                                    onError={(e) => { e.target.src = 'logofesla.png'; }}
-                                />
-                                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md px-4 py-1 rounded-full border border-feslaRed/50 text-[11px] font-mono font-bold text-feslaRed uppercase tracking-wider text-center shadow-lg">
-                                    3D $FESLA Token
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Hero Content */}
                         <div class="w-full max-w-2xl space-y-6 text-right z-10 my-auto">
-                            
                             <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-feslaRed/10 border border-feslaRed/40 text-feslaRed text-xs rounded-full font-bold uppercase tracking-wider">
                                 <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
                                 <span>Powered by Solana High-Speed Network</span>
@@ -322,9 +307,9 @@
 
                             {/* Card Details */}
                             <div class="glass-panel p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 text-left relative">
-                                <div class="md:hidden flex items-center space-x-3 mb-2 bg-feslaDark/80 p-2 rounded-xl border border-feslaRed/30">
-                                    <img src="coin3d" alt="Fesla Coin" class="w-10 h-10 rounded-full animate-spin3d border border-feslaRed" />
-                                    <span class="text-xs font-bold text-white uppercase tracking-wider">$FESLA 3D Element Active</span>
+                                <div class="md:hidden flex items-center space-x-3 mb-2 bg-feslaDark/80 p-2 rounded-xl border border-white/10">
+                                    <img src="logofesla.png" alt="Fesla Logo" class="w-10 h-10 rounded-full" />
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider">$FESLA Token Active</span>
                                 </div>
 
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
@@ -409,12 +394,10 @@
                                     <span>Configure & Buy</span>
                                 </button>
                             </div>
-
                         </div>
                     </section>
 
                     {/* SOLANA UTILITY SUITE SECTION */}
-                    {}
                     <section id="solana-utilities" class="py-20 bg-feslaDark border-t border-gray-800 px-6 relative">
                         <div class="max-w-6xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-12">
@@ -541,22 +524,35 @@
                         </div>
                     </section>
 
-                    {/* MODEL F SECTION */}
-                    {}
-                    <section id="model-f" class="relative min-h-screen bg-feslaDark border-t border-gray-800 flex flex-col justify-between items-center py-24 px-4">
-                        <div class="text-center mt-6 z-10">
-                            <span class="text-feslaRed text-xs font-bold uppercase tracking-widest bg-feslaRed/10 border border-feslaRed/30 px-3 py-1 rounded-full">
+                    {/* MODEL F SECTION WITH HEROtwo.jpg BACKGROUND & NO SPIN / NO RED BORDER */}
+                    <section 
+                        id="model-f" 
+                        class="relative min-h-screen bg-cover bg-center border-t border-gray-800 flex flex-col justify-between items-center py-24 px-6 overflow-hidden"
+                        style={{ backgroundImage: "linear-gradient(180deg, rgba(13,14,17,0.85) 0%, rgba(13,14,17,0.7) 50%, rgba(13,14,17,0.95) 100%), url('HEROtwo.jpg')" }}
+                    >
+                        {/* Static Logo / Coin Image (Tidak Berputar & Tidak Ada Garis Tepi Merah) */}
+                        <div class="text-center mt-6 z-10 flex flex-col items-center">
+                            <img 
+                                src="logofesla.png" 
+                                alt="Fesla Static Icon" 
+                                class="w-20 h-20 mb-4 object-contain"
+                                onError={(e) => { e.target.src = 'HEROtwo.jpg'; }}
+                            />
+                            <span class="text-white text-xs font-bold uppercase tracking-widest bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
                                 Flagship Vehicle
                             </span>
-                            <h2 class="text-4xl md:text-6xl font-black text-white mt-2">Model F</h2>
-                            <p class="text-gray-300 text-sm md:text-lg">0-100 Sol in 0.0001 seconds. Fully Autonomous Pump.</p>
+                            <h2 class="text-4xl md:text-6xl font-black text-white mt-3 uppercase tracking-tight">Model F</h2>
+                            <p class="text-gray-200 text-sm md:text-lg max-w-xl mx-auto mt-2 font-medium">
+                                0-100 Sol in 0.0001 seconds. Fully Autonomous Pump.
+                            </p>
                         </div>
 
+                        {/* Specs Card */}
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl w-full z-10 glass-panel p-6 rounded-2xl">
                             <div class="text-center border-r border-gray-800 last:border-0">
                                 <div class="text-gray-400 text-xs font-bold uppercase">Akselerasi</div>
                                 <div class="text-2xl md:text-3xl font-black text-white mt-1">0.001s</div>
-                                <div class="text-[10px] text-feslaRed">Sub-Second Finality</div>
+                                <div class="text-[10px] text-gray-300 font-semibold">Sub-Second Finality</div>
                             </div>
                             <div class="text-center border-r border-gray-800 last:border-0">
                                 <div class="text-gray-400 text-xs font-bold uppercase">Supercharge</div>
@@ -566,19 +562,19 @@
                             <div class="text-center border-r border-gray-800 last:border-0">
                                 <div class="text-gray-400 text-xs font-bold uppercase">Solana Market</div>
                                 <div class="text-2xl md:text-3xl font-black text-white mt-1">$FESLA</div>
-                                <div class="text-[10px] text-gray-400">Raydium Liquidity</div>
+                                <div class="text-[10px] text-gray-300">Raydium Liquidity</div>
                             </div>
                             <div class="text-center">
                                 <div class="text-gray-400 text-xs font-bold uppercase">Range</div>
                                 <div class="text-2xl md:text-3xl font-black text-white mt-1">Unlimited</div>
-                                <div class="text-[10px] text-feslaRed">To The Moon</div>
+                                <div class="text-[10px] text-gray-300 font-semibold">To The Moon</div>
                             </div>
                         </div>
 
                         <div class="z-10">
                             <button 
                                 onClick={() => { setSelectedModel("Model F"); setModalOpen(true); }}
-                                class="bg-feslaRed hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-sm uppercase tracking-wider transition transform hover:scale-105"
+                                class="bg-feslaRed hover:bg-red-700 text-white font-bold py-3.5 px-8 rounded-xl text-sm uppercase tracking-wider transition transform hover:scale-105 shadow-xl shadow-black/50"
                             >
                                 Order Model F
                             </button>
@@ -586,7 +582,6 @@
                     </section>
 
                     {/* CYBERTRASH SECTION */}
-                    {}
                     <section id="cybertruck" class="py-24 bg-feslaDark border-t border-gray-800 px-6 relative overflow-hidden">
                         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                             <div class="space-y-6">
@@ -624,17 +619,16 @@
                             </div>
 
                             <div class="glass-panel p-8 rounded-3xl text-center space-y-6 relative overflow-hidden">
-                                <div class="w-28 h-28 bg-feslaGray/80 rounded-full mx-auto flex items-center justify-center border-2 border-feslaRed/50 shadow-2xl relative p-2">
+                                <div class="w-28 h-28 bg-feslaGray/80 rounded-full mx-auto flex items-center justify-center border border-white/20 shadow-2xl relative p-2">
                                     <img 
-                                        src="coin3d" 
-                                        alt="Coin 3D" 
-                                        class="w-full h-full rounded-full animate-spin3d object-cover" 
-                                        onError={(e) => { e.target.src = 'logofesla.png'; }}
+                                        src="logofesla.png" 
+                                        alt="Fesla Logo" 
+                                        class="w-full h-full object-contain" 
                                     />
                                 </div>
                                 <div>
                                     <h3 class="text-xl font-bold text-white">CyberTrash Specs</h3>
-                                    <p class="text-xs text-gray-400 mt-1">Stainless Steel Armor Shell + 3D Solana Core</p>
+                                    <p class="text-xs text-gray-400 mt-1">Stainless Steel Armor Shell + Solana Core</p>
                                 </div>
                                 <div class="space-y-2 text-xs text-left">
                                     <div class="flex justify-between border-b border-gray-800 pb-2">
@@ -655,7 +649,6 @@
                     </section>
 
                     {/* FSD AUTOPILOT DEMO */}
-                    {}
                     <section id="fsd" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-5xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-12">
@@ -714,7 +707,6 @@
                     </section>
 
                     {/* TOKENOMICS */}
-                    {}
                     <section id="tokenomics" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-6xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-16">
@@ -751,7 +743,6 @@
                     </section>
 
                     {/* ROADMAP */}
-                    {}
                     <section id="roadmap" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-4xl mx-auto space-y-12">
                             <div class="text-center">
@@ -778,8 +769,11 @@
                         </div>
                     </section>
 
-                    {/* FOOTER */}
-                    <footer class="bg-feslaDark border-t border-gray-800 py-10 px-6 text-center text-xs text-gray-500 space-y-3">
+                    {/* FOOTER USING logofesla.png */}
+                    <footer class="bg-feslaDark border-t border-gray-800 py-12 px-6 text-center text-xs text-gray-500 space-y-4">
+                        <div class="flex justify-center items-center space-x-2">
+                            <img src="logofesla.png" alt="Fesla Logo Footer" class="h-8 w-auto object-contain" />
+                        </div>
                         <p>© 2026 Fesla Motors Inc. Powered by Solana Blockchain.</p>
                         <p class="max-w-2xl mx-auto text-[10px] text-gray-600">
                             $FESLA is a meme cryptocurrency with no intrinsic value or expectation of financial return. It is inspired by autonomous vehicle visionaries but is completely independent.
