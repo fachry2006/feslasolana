@@ -19,6 +19,26 @@
                         feslaDark: '#0D0E11',
                         feslaCard: '#171A20',
                         feslaGray: '#22262F',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) rotate(5deg) scale(1.03)' },
+                        },
+                        spin3d: {
+                            '0%': { transform: 'rotateY(0deg) translateY(0px)' },
+                            '50%': { transform: 'rotateY(180deg) translateY(-10px)' },
+                            '100%': { transform: 'rotateY(360deg) translateY(0px)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(232,33,39,0.4))' },
+                            '50%': { filter: 'drop-shadow(0 0 35px rgba(232,33,39,0.8))' },
+                        }
+                    },
+                    animation: {
+                        float: 'float 6s ease-in-out infinite',
+                        spin3d: 'spin3d 8s linear infinite',
+                        pulseGlow: 'pulseGlow 3s ease-in-out infinite',
                     }
                 }
             }
@@ -41,21 +61,39 @@
             background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
                               linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
         }
-        .hero-bg-1 {
-            background: linear-gradient(90deg, rgba(13, 14, 17, 0.25) 0%, rgba(13, 14, 17, 0.95) 65%), url('herofirst'), url('hero.jfif');
-            background-size: cover;
-            background-position: center;
-        }
-        .hero-bg-2 {
-            background: linear-gradient(rgba(13, 14, 17, 0.5), rgba(13, 14, 17, 0.95)), url('HEROtwo.jpg');
-            background-size: cover;
-            background-position: center;
-        }
         .glass-panel {
             background: rgba(23, 26, 32, 0.85);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        /* Smooth Slide Transition Styles */
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;
+            transform: scale(1.05);
+            will-change: opacity, transform;
+        }
+        .hero-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 3D Round Coin Container */
+        .coin-3d-wrapper {
+            perspective: 1000px;
+        }
+        .coin-3d-element {
+            border-radius: 9999px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0D0E11; }
@@ -72,15 +110,23 @@
 
         const CONTRACT_ADDRESS = "FeslaSolanaMemeCoin69420PumpDotFunContract420";
 
+        // Daftar Gambar Hero Slide (Hanya heroslide1, heroslide2, herofirst)
+        const HERO_SLIDES = [
+            "heroslide1",
+            "heroslide2",
+            "herofirst"
+        ];
+
         function App() {
             const [copied, setCopied] = useState(false);
             const [solAmount, setSolAmount] = useState(1);
             const [solPrice, setSolPrice] = useState(185.50);
             const [selectedModel, setSelectedModel] = useState("Model F");
-            const [paintColor, setPaintColor] = useState("bg-feslaRed");
-            const [fsdEnabled, setFsdEnabled] = useState(true);
             const [modalOpen, setModalOpen] = useState(false);
             const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+            // State Hero Slide
+            const [currentSlide, setCurrentSlide] = useState(0);
 
             // FSD Logs state
             const [logs, setLogs] = useState([
@@ -91,11 +137,19 @@
                 "[1.05s] Auto-buying dip on $FESLA/SOL liquidity pair..."
             ]);
 
+            // Auto Slide Effect
+            useEffect(() => {
+                const slideInterval = setInterval(() => {
+                    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+                }, 5000);
+                return () => clearInterval(slideInterval);
+            }, []);
+
             useEffect(() => {
                 if (window.lucide) {
                     window.lucide.createIcons();
                 }
-            }, [modalOpen, mobileMenuOpen, logs]);
+            }, [modalOpen, mobileMenuOpen, logs, currentSlide]);
 
             useEffect(() => {
                 const interval = setInterval(() => {
@@ -129,23 +183,22 @@
                 if (window.confetti) {
                     window.confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
                 }
-                alert(`Order Confirmed! Your ${selectedModel} allocation has been processed on Solana Mainnet.`);
                 setModalOpen(false);
             };
 
-            // Calculated utility values
             const feslaPerSol = 5000000;
             const feslaReceived = solAmount * feslaPerSol;
             const usdValue = (solAmount * solPrice).toFixed(2);
 
             return (
-                <div class="min-h-screen flex flex-col justify-between">
+                <div class="min-h-screen flex flex-col justify-between relative overflow-x-hidden">
                     
                     {/* NAVIGATION BAR */}
+                    {}
                     <header class="fixed top-0 left-0 right-0 z-50 bg-feslaDark/90 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between">
                         {/* Logo */}
                         <a href="#hero" class="flex items-center space-x-2">
-                            <img src="logofesla.png" alt="Fesla Logo" class="h-8 w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                            <img src="logofesla.png" alt="Fesla Logo" class="h-8 w-auto object-contain" onError={(e) => { e.target.style.display='none'; if(e.target.nextElementSibling) e.target.nextElementSibling.style.display='flex'; }} />
                             <div class="hidden flex-col leading-none">
                                 <div class="flex items-center space-x-1">
                                     <span class="text-feslaRed font-black text-2xl tracking-tighter">F.</span>
@@ -221,9 +274,40 @@
                         </div>
                     )}
 
-                    {/* HERO SECTION - RATA KANAN (RIGHT ALIGNED CONTENT) */}
-                    <section id="hero" class="relative min-h-screen hero-bg-1 flex flex-col justify-center items-end pt-28 pb-12 px-6 md:px-16">
+                    {/* HERO SECTION WITH SMOOTH SLIDE BACKGROUND */}
+                    {}
+                    <section id="hero" class="relative min-h-screen flex flex-col justify-center items-end pt-28 pb-12 px-6 md:px-16 overflow-hidden">
                         
+                        {/* Background Smooth Slider */}
+                        <div class="absolute inset-0 z-0">
+                            {HERO_SLIDES.map((slide, index) => (
+                                <div 
+                                    key={index}
+                                    class={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                                    style={{
+                                        backgroundImage: `linear-gradient(90deg, rgba(13, 14, 17, 0.35) 0%, rgba(13, 14, 17, 0.95) 65%), url('${slide}')`
+                                    }}
+                                />
+                            ))}
+                            <div class="absolute inset-0 bg-gradient-to-t from-feslaDark via-transparent to-feslaDark/50"></div>
+                        </div>
+
+                        {/* ELEMEN COIN 3D MELAYANG */}
+                        <div class="hidden md:flex absolute left-12 top-1/3 z-20 items-center justify-center pointer-events-none coin-3d-wrapper">
+                            <div class="relative animate-float">
+                                <img 
+                                    src="coin3d" 
+                                    alt="3D Fesla Coin" 
+                                    class="w-48 h-48 lg:w-64 lg:h-64 rounded-full coin-3d-element animate-spin3d animate-pulseGlow border-2 border-feslaRed/40 p-1 bg-black/30 backdrop-blur-sm"
+                                    onError={(e) => { e.target.src = 'logofesla.png'; }}
+                                />
+                                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-md px-4 py-1 rounded-full border border-feslaRed/50 text-[11px] font-mono font-bold text-feslaRed uppercase tracking-wider text-center shadow-lg">
+                                    3D $FESLA Token
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Hero Content */}
                         <div class="w-full max-w-2xl space-y-6 text-right z-10 my-auto">
                             
                             <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-feslaRed/10 border border-feslaRed/40 text-feslaRed text-xs rounded-full font-bold uppercase tracking-wider">
@@ -236,8 +320,13 @@
                                 <p class="text-gray-300 text-base md:text-lg font-medium">The World's Fastest Autonomous Meme Currency. Built on Solana.</p>
                             </div>
 
-                            {/* Refined Card - Rata Kanan without Green or Purple */}
-                            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 text-left">
+                            {/* Card Details */}
+                            <div class="glass-panel p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6 text-left relative">
+                                <div class="md:hidden flex items-center space-x-3 mb-2 bg-feslaDark/80 p-2 rounded-xl border border-feslaRed/30">
+                                    <img src="coin3d" alt="Fesla Coin" class="w-10 h-10 rounded-full animate-spin3d border border-feslaRed" />
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider">$FESLA 3D Element Active</span>
+                                </div>
+
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800/80 pb-5">
                                     <div class="space-y-1">
                                         <h3 class="text-xs font-bold uppercase tracking-widest text-gray-400">Solana Token Contract Address</h3>
@@ -299,7 +388,19 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-end space-x-4 pt-2">
+                            {/* Slide Indicators & Buttons */}
+                            <div class="flex items-center justify-between pt-2">
+                                <div class="flex items-center space-x-2">
+                                    {HERO_SLIDES.map((_, idx) => (
+                                        <button 
+                                            key={idx}
+                                            onClick={() => setCurrentSlide(idx)}
+                                            class={`h-2.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-8 bg-feslaRed' : 'w-2.5 bg-gray-600 hover:bg-gray-400'}`}
+                                            title={`Slide ${idx + 1}`}
+                                        />
+                                    ))}
+                                </div>
+
                                 <button 
                                     onClick={() => setModalOpen(true)}
                                     class="bg-feslaRed hover:bg-red-700 text-white font-bold py-3.5 px-8 rounded-xl text-xs uppercase tracking-wider transition transform hover:scale-105 shadow-xl shadow-feslaRed/20 flex items-center space-x-2"
@@ -313,7 +414,8 @@
                     </section>
 
                     {/* SOLANA UTILITY SUITE SECTION */}
-                    <section id="solana-utilities" class="py-20 bg-feslaDark border-t border-gray-800 px-6">
+                    {}
+                    <section id="solana-utilities" class="py-20 bg-feslaDark border-t border-gray-800 px-6 relative">
                         <div class="max-w-6xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-12">
                                 <span class="text-feslaRed text-xs font-bold uppercase tracking-widest bg-feslaRed/10 border border-feslaRed/30 px-3 py-1 rounded-full">
@@ -323,11 +425,8 @@
                                 <p class="text-gray-400 text-sm md:text-base mt-2">Real-time trading calculator, live liquidity estimator, and contract validator.</p>
                             </div>
 
-                            {/* Utility Container */}
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                
-                                {/* 1. Solana Swap Calculator */}
-                                <div class="glass-panel p-6 rounded-2xl space-y-4">
+                                <div class="glass-panel p-6 rounded-2xl space-y-4 relative overflow-hidden">
                                     <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                                         <div class="flex items-center space-x-2">
                                             <i data-lucide="arrow-right-left" class="w-5 h-5 text-feslaRed"></i>
@@ -374,7 +473,6 @@
                                     </a>
                                 </div>
 
-                                {/* 2. Live Solana Node Status */}
                                 <div class="glass-panel p-6 rounded-2xl space-y-4">
                                     <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                                         <div class="flex items-center space-x-2">
@@ -407,7 +505,6 @@
                                     </div>
                                 </div>
 
-                                {/* 3. Security Verification */}
                                 <div class="glass-panel p-6 rounded-2xl space-y-4">
                                     <div class="flex items-center justify-between border-b border-gray-800 pb-3">
                                         <div class="flex items-center space-x-2">
@@ -440,13 +537,13 @@
                                         <span>Verify Contract Address</span>
                                     </button>
                                 </div>
-
                             </div>
                         </div>
                     </section>
 
                     {/* MODEL F SECTION */}
-                    <section id="model-f" class="relative min-h-screen hero-bg-2 flex flex-col justify-between items-center py-24 px-4">
+                    {}
+                    <section id="model-f" class="relative min-h-screen bg-feslaDark border-t border-gray-800 flex flex-col justify-between items-center py-24 px-4">
                         <div class="text-center mt-6 z-10">
                             <span class="text-feslaRed text-xs font-bold uppercase tracking-widest bg-feslaRed/10 border border-feslaRed/30 px-3 py-1 rounded-full">
                                 Flagship Vehicle
@@ -455,7 +552,6 @@
                             <p class="text-gray-300 text-sm md:text-lg">0-100 Sol in 0.0001 seconds. Fully Autonomous Pump.</p>
                         </div>
 
-                        {/* Vehicle Stats Bar */}
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl w-full z-10 glass-panel p-6 rounded-2xl">
                             <div class="text-center border-r border-gray-800 last:border-0">
                                 <div class="text-gray-400 text-xs font-bold uppercase">Akselerasi</div>
@@ -490,8 +586,9 @@
                     </section>
 
                     {/* CYBERTRASH SECTION */}
-                    <section id="cybertruck" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
-                        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    {}
+                    <section id="cybertruck" class="py-24 bg-feslaDark border-t border-gray-800 px-6 relative overflow-hidden">
+                        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
                             <div class="space-y-6">
                                 <span class="text-feslaRed text-xs font-bold uppercase tracking-widest bg-feslaRed/10 border border-feslaRed/30 px-3 py-1 rounded-full">
                                     Ultra Hardened Exoskeleton
@@ -526,13 +623,18 @@
                                 </button>
                             </div>
 
-                            <div class="glass-panel p-8 rounded-3xl text-center space-y-6">
-                                <div class="w-24 h-24 bg-feslaGray/80 rounded-2xl mx-auto flex items-center justify-center border border-gray-700 shadow-inner">
-                                    <i data-lucide="box" class="w-12 h-12 text-feslaRed"></i>
+                            <div class="glass-panel p-8 rounded-3xl text-center space-y-6 relative overflow-hidden">
+                                <div class="w-28 h-28 bg-feslaGray/80 rounded-full mx-auto flex items-center justify-center border-2 border-feslaRed/50 shadow-2xl relative p-2">
+                                    <img 
+                                        src="coin3d" 
+                                        alt="Coin 3D" 
+                                        class="w-full h-full rounded-full animate-spin3d object-cover" 
+                                        onError={(e) => { e.target.src = 'logofesla.png'; }}
+                                    />
                                 </div>
                                 <div>
                                     <h3 class="text-xl font-bold text-white">CyberTrash Specs</h3>
-                                    <p class="text-xs text-gray-400 mt-1">Stainless Steel Armor Shell</p>
+                                    <p class="text-xs text-gray-400 mt-1">Stainless Steel Armor Shell + 3D Solana Core</p>
                                 </div>
                                 <div class="space-y-2 text-xs text-left">
                                     <div class="flex justify-between border-b border-gray-800 pb-2">
@@ -553,6 +655,7 @@
                     </section>
 
                     {/* FSD AUTOPILOT DEMO */}
+                    {}
                     <section id="fsd" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-5xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-12">
@@ -611,6 +714,7 @@
                     </section>
 
                     {/* TOKENOMICS */}
+                    {}
                     <section id="tokenomics" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-6xl mx-auto">
                             <div class="text-center max-w-3xl mx-auto mb-16">
@@ -621,7 +725,6 @@
                                 <p class="text-gray-400 text-base md:text-lg mt-3">Designed for maximum range, zero emissions, and pure decentralization on Solana.</p>
                             </div>
 
-                            {/* Tokenomics Stats Grid */}
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                                 <div class="bg-feslaCard p-6 rounded-2xl border border-gray-800 text-center hover:border-feslaRed/50 transition">
                                     <div class="text-gray-400 text-xs font-bold uppercase mb-1">TOTAL BATTERY SUPPLY</div>
@@ -644,149 +747,84 @@
                                     <div class="text-xs text-gray-300 font-semibold mt-1">100% Community-Owned</div>
                                 </div>
                             </div>
-
-                            {/* Token Distribution Cards */}
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div class="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-feslaRed/50 transition">
-                                    <h3 class="text-xl font-bold text-white mb-2">Public Raydium Pool</h3>
-                                    <p class="text-sm text-gray-400 mb-4">80% of all tokens seeded directly into Raydium SOL liquidity pool with LP tokens burned on Solscan.</p>
-                                    <span class="inline-block px-3 py-1 bg-feslaRed/10 text-feslaRed text-xs font-mono rounded">80,000,000,000 $FESLA</span>
-                                </div>
-
-                                <div class="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-feslaRed/50 transition">
-                                    <h3 class="text-xl font-bold text-white mb-2">Supercharger Staking</h3>
-                                    <p class="text-sm text-gray-400 mb-4">Reserved as rewards for long-term drivers who park their tokens in our decentralized vaults.</p>
-                                    <span class="inline-block px-3 py-1 bg-white/10 text-white text-xs font-mono rounded">10,000,000,000 $FESLA</span>
-                                </div>
-
-                                <div class="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-feslaRed/50 transition">
-                                    <h3 class="text-xl font-bold text-white mb-2">Community Marketing</h3>
-                                    <p class="text-sm text-gray-400 mb-4">Dedicated vault for Solana ecosystem partnerships, DEX listings, and global meme campaigns.</p>
-                                    <span class="inline-block px-3 py-1 bg-feslaRed/10 text-feslaRed text-xs font-mono rounded">10,000,000,000 $FESLA</span>
-                                </div>
-                            </div>
                         </div>
                     </section>
 
                     {/* ROADMAP */}
+                    {}
                     <section id="roadmap" class="py-24 bg-feslaDark border-t border-gray-800 px-6">
                         <div class="max-w-4xl mx-auto space-y-12">
                             <div class="text-center">
                                 <span class="text-feslaRed text-xs font-bold uppercase tracking-widest bg-feslaRed/10 border border-feslaRed/30 px-3 py-1 rounded-full">
                                     Execution Blueprint
                                 </span>
-                                <h2 class="text-4xl font-black text-white mt-3">Master Plan Part 69</h2>
+                                <h2 class="text-4xl font-extrabold text-white mt-3">Master Plan Part IV</h2>
                             </div>
 
                             <div class="space-y-6">
-                                <div class="glass-panel p-6 rounded-2xl border border-gray-800 flex items-start space-x-4">
-                                    <div class="w-8 h-8 rounded-full bg-feslaRed text-white flex items-center justify-center font-bold text-sm shrink-0">1</div>
-                                    <div>
-                                        <h3 class="font-bold text-white text-lg">Phase 1: Gigafactory Mainnet Ignition</h3>
-                                        <p class="text-xs text-gray-400 mt-1">Deploy $FESLA SPL token on Solana, burn initial LP tokens, launch interactive configurator, and index on Solscan.</p>
-                                    </div>
+                                <div class="glass-panel p-6 rounded-2xl border-l-4 border-feslaRed">
+                                    <h3 class="text-lg font-bold text-white">Phase 1: Sub-Second Ignition</h3>
+                                    <p class="text-xs text-gray-400 mt-1">Token deployment on Solana Mainnet, Raydium LP creation & LP burning, coin initial marketing blitz.</p>
                                 </div>
-
-                                <div class="glass-panel p-6 rounded-2xl border border-gray-800 flex items-start space-x-4">
-                                    <div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm shrink-0">2</div>
-                                    <div>
-                                        <h3 class="font-bold text-white text-lg">Phase 2: Supercharger Liquidity Network</h3>
-                                        <p class="text-xs text-gray-400 mt-1">List on CoinGecko & CoinMarketCap, initiate FSD trading telemetry, and host community spaces.</p>
-                                    </div>
+                                <div class="glass-panel p-6 rounded-2xl border-l-4 border-gray-600">
+                                    <h3 class="text-lg font-bold text-white">Phase 2: Supercharger Network</h3>
+                                    <p class="text-xs text-gray-400 mt-1">CoinGecko & CoinMarketCap listings, FSD Neural Auto-trading bot release, CEX exchange listings.</p>
                                 </div>
-
-                                <div class="glass-panel p-6 rounded-2xl border border-gray-800 flex items-start space-x-4">
-                                    <div class="w-8 h-8 rounded-full bg-feslaRed text-white flex items-center justify-center font-bold text-sm shrink-0">3</div>
-                                    <div>
-                                        <h3 class="font-bold text-white text-lg">Phase 3: Interplanetary Expansion</h3>
-                                        <p class="text-xs text-gray-400 mt-1">Centralized exchange listings, physical CyberMerch store, and Solana Pay integration for virtual Fesla test drives.</p>
-                                    </div>
+                                <div class="glass-panel p-6 rounded-2xl border-l-4 border-gray-600">
+                                    <h3 class="text-lg font-bold text-white">Phase 3: Interplanetary Expansion</h3>
+                                    <p class="text-xs text-gray-400 mt-1">DAO governance release, $FESLA merchandise store accepting SPL tokens, Mars colonization fund launch.</p>
                                 </div>
                             </div>
                         </div>
                     </section>
 
                     {/* FOOTER */}
-                    <footer class="bg-black py-12 px-6 border-t border-gray-900 text-xs text-gray-500">
-                        <div class="max-w-6xl mx-auto space-y-6">
-                            <div class="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-gray-800 pb-6">
-                                <div class="flex items-center space-x-2">
-                                    <span class="font-black text-white text-base tracking-widest">F E S L A</span>
-                                    <span>| Solana Meme Currency</span>
-                                </div>
-                                <div class="flex space-x-4 text-gray-400">
-                                    <a href="https://x.com" target="_blank" class="hover:text-white"><i data-lucide="twitter" class="w-4 h-4"></i></a>
-                                    <a href="https://telegram.org" target="_blank" class="hover:text-white"><i data-lucide="send" class="w-4 h-4"></i></a>
-                                    <a href="https://github.com" target="_blank" class="hover:text-white"><i data-lucide="github" class="w-4 h-4"></i></a>
-                                </div>
-                            </div>
-
-                            <p class="leading-relaxed text-[11px]">
-                                <strong>Disclaimer:</strong> $FESLA is a satirical parody currency on the Solana blockchain created for entertainment and utility demonstration purposes. It has no affiliation with Tesla, Inc. or Elon Musk. Cryptocurrencies are highly volatile; please conduct your own research before interacting with SPL tokens.
-                            </p>
-
-                            <div class="flex justify-between items-center text-[10px]">
-                                <span>© 2026 Fesla Motors Parody. Built on Solana.</span>
-                                <span>SPL Token Standard</span>
-                            </div>
-                        </div>
+                    <footer class="bg-feslaDark border-t border-gray-800 py-10 px-6 text-center text-xs text-gray-500 space-y-3">
+                        <p>© 2026 Fesla Motors Inc. Powered by Solana Blockchain.</p>
+                        <p class="max-w-2xl mx-auto text-[10px] text-gray-600">
+                            $FESLA is a meme cryptocurrency with no intrinsic value or expectation of financial return. It is inspired by autonomous vehicle visionaries but is completely independent.
+                        </p>
                     </footer>
 
-                    {/* CUSTOMIZER MODAL */}
+                    {/* ORDER MODAL */}
                     {modalOpen && (
-                        <div class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-                            <div class="bg-feslaDark border border-gray-800 w-full max-w-2xl rounded-2xl p-6 space-y-6 relative">
-                                <button 
-                                    onClick={() => setModalOpen(false)}
-                                    class="absolute top-4 right-4 text-gray-400 hover:text-white"
-                                >
-                                    <i data-lucide="x" class="w-5 h-5"></i>
-                                </button>
-
-                                <div>
-                                    <span class="text-xs font-mono text-feslaRed uppercase tracking-wider">Solana Configurator</span>
-                                    <h3 class="text-2xl font-bold text-white mt-1">Configure Your {selectedModel}</h3>
-                                </div>
-
-                                {/* Paint Selection */}
-                                <div>
-                                    <label class="text-xs text-gray-400 block mb-2 font-bold uppercase">Select Finish</label>
-                                    <div class="flex space-x-3">
-                                        <button onClick={() => setPaintColor("bg-feslaRed")} class={`w-8 h-8 rounded-full bg-feslaRed border-2 ${paintColor === 'bg-feslaRed' ? 'border-white ring-2 ring-feslaRed' : 'border-transparent'}`}></button>
-                                        <button onClick={() => setPaintColor("bg-blue-600")} class={`w-8 h-8 rounded-full bg-blue-600 border-2 ${paintColor === 'bg-blue-600' ? 'border-white ring-2 ring-blue-500' : 'border-transparent'}`}></button>
-                                        <button onClick={() => setPaintColor("bg-amber-400")} class={`w-8 h-8 rounded-full bg-amber-400 border-2 ${paintColor === 'bg-amber-400' ? 'border-white ring-2 ring-amber-400' : 'border-transparent'}`}></button>
-                                        <button onClick={() => setPaintColor("bg-gray-100")} class={`w-8 h-8 rounded-full bg-gray-100 border-2 ${paintColor === 'bg-gray-100' ? 'border-white ring-2 ring-white' : 'border-transparent'}`}></button>
-                                    </div>
-                                </div>
-
-                                {/* Addons */}
-                                <div class="space-y-2">
-                                    <label class="flex items-center justify-between p-3 rounded-lg border border-gray-800 bg-feslaCard cursor-pointer">
-                                        <div class="flex items-center space-x-2">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={fsdEnabled} 
-                                                onChange={(e) => setFsdEnabled(e.target.checked)}
-                                                class="accent-feslaRed rounded"
-                                            />
-                                            <span class="text-xs font-bold text-white">Full Self-Doge Beta</span>
-                                        </div>
-                                        <span class="text-xs text-feslaRed font-mono">+100k $FESLA</span>
-                                    </label>
-                                </div>
-
-                                <div class="border-t border-gray-800 pt-4 flex items-center justify-between">
-                                    <div>
-                                        <span class="text-xs text-gray-400 block">Total Price:</span>
-                                        <span class="text-lg font-black text-white font-mono">1,100,000 $FESLA</span>
-                                    </div>
-                                    <button 
-                                        onClick={triggerOrder}
-                                        class="bg-feslaRed hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg text-xs uppercase tracking-wider transition"
-                                    >
-                                        Confirm Reservation
+                        <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+                            <div class="glass-panel max-w-md w-full p-6 rounded-3xl border border-white/20 space-y-4">
+                                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                                    <h3 class="text-lg font-bold text-white">Order {selectedModel}</h3>
+                                    <button onClick={() => setModalOpen(false)} class="text-gray-400 hover:text-white">
+                                        <i data-lucide="x" class="w-5 h-5"></i>
                                     </button>
                                 </div>
+
+                                <div class="space-y-3 text-xs">
+                                    <div>
+                                        <label class="text-gray-400 block mb-1">Select Solana Vehicle</label>
+                                        <select 
+                                            value={selectedModel} 
+                                            onChange={(e) => setSelectedModel(e.target.value)}
+                                            class="w-full bg-feslaDark border border-gray-700 rounded-lg p-2.5 text-white font-bold focus:outline-none"
+                                        >
+                                            <option value="Model F">Model F (Sub-Second Finality)</option>
+                                            <option value="CyberTrash">CyberTrash (Rugproof Stainless Steel)</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="text-gray-400 block mb-1">Payment Method</label>
+                                        <div class="p-3 bg-feslaDark border border-feslaRed/40 rounded-lg flex items-center justify-between">
+                                            <span class="font-bold text-white">$FESLA / SOL SPL Token</span>
+                                            <span class="text-feslaRed font-mono font-bold">Instant</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    onClick={triggerOrder} 
+                                    class="w-full bg-feslaRed hover:bg-red-700 text-white font-bold py-3 rounded-xl uppercase tracking-wider text-xs transition shadow-lg shadow-feslaRed/30"
+                                >
+                                    Confirm Reservation
+                                </button>
                             </div>
                         </div>
                     )}
@@ -795,7 +833,8 @@
             );
         }
 
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
